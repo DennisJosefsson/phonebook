@@ -1,7 +1,11 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
+morgan.token('body', (req) => JSON.stringify(req.body))
+const logger = morgan(':method :url :status :response-time :body')
 app.use(express.json())
+app.use(logger)
 
 let persons = [
   {
@@ -30,10 +34,6 @@ const generateId = () => {
   const id = Math.floor(Math.random() * 100000)
   return id
 }
-
-app.get('/', (request, response) => {
-  response.send('<h1>Hello World!</h1>')
-})
 
 app.get('/info', (request, response) => {
   const time = new Date()
@@ -80,7 +80,6 @@ app.post('/api/persons', (request, response) => {
   const person = {
     name: body.name,
     number: body.number,
-    date: new Date(),
     id: generateId(),
   }
 
